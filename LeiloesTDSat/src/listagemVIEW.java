@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class listagemVIEW extends javax.swing.JFrame {
 
     private javax.swing.JButton btnVender;
+    private javax.swing.JButton btnListarVendidos;
     private javax.swing.JTextField id_produto_venda;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -24,6 +25,7 @@ public class listagemVIEW extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         id_produto_venda = new javax.swing.JTextField();
         btnVender = new javax.swing.JButton();
+        btnListarVendidos = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -48,6 +50,13 @@ public class listagemVIEW extends javax.swing.JFrame {
             }
         });
 
+        btnListarVendidos.setText("Listar Vendidos");
+        btnListarVendidos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnListarVendidosActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -67,6 +76,9 @@ public class listagemVIEW extends javax.swing.JFrame {
                         .addComponent(id_produto_venda, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnVender)
+                        .addGap(93, 93, 93))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(btnListarVendidos)
                         .addGap(93, 93, 93))))
         );
         layout.setVerticalGroup(
@@ -81,6 +93,8 @@ public class listagemVIEW extends javax.swing.JFrame {
                     .addComponent(jLabel2)
                     .addComponent(id_produto_venda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnVender))
+                .addGap(18, 18, 18)
+                .addComponent(btnListarVendidos)
                 .addContainerGap(45, Short.MAX_VALUE))
         );
 
@@ -101,6 +115,10 @@ public class listagemVIEW extends javax.swing.JFrame {
         listarProdutos();
     }
 
+    private void btnListarVendidosActionPerformed(java.awt.event.ActionEvent evt) {
+        listarProdutosVendidos();
+    }
+
     public void listarProdutos() {
         try {
             ProdutosDAO produtosdao = new ProdutosDAO();
@@ -119,6 +137,27 @@ public class listagemVIEW extends javax.swing.JFrame {
             }
         } catch (Exception erro) {
             JOptionPane.showMessageDialog(null, "listarProdutos: " + erro.getMessage());
+        }
+    }
+
+    public void listarProdutosVendidos() {
+        try {
+            ProdutosDAO produtosdao = new ProdutosDAO();
+            DefaultTableModel model = (DefaultTableModel) tabela_produtos.getModel();
+            model.setNumRows(0);
+
+            ArrayList<ProdutosDTO> listagem = produtosdao.listarProdutosVendidos();
+
+            for (int num = 0; num < listagem.size(); num++) {
+                model.addRow(new Object[]{
+                    listagem.get(num).getId(),
+                    listagem.get(num).getNome(),
+                    listagem.get(num).getValor(),
+                    listagem.get(num).getStatus()
+                });
+            }
+        } catch (Exception erro) {
+            JOptionPane.showMessageDialog(null, "listarProdutosVendidos: " + erro.getMessage());
         }
     }
 
